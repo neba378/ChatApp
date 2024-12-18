@@ -1,32 +1,34 @@
-const users = [];
+const User = require("./../models/User");
 
-//join user to the chat
-
-function userJoin(id, username, room) {
-  const user = { id, username, room };
-  users.push(user);
-
-  return user;
-}
-
-function getCurrentUser(id) {
-  return users.find((user) => user.id === id);
-}
-
-function userLeave(id) {
-  const index = users.findIndex((user) => user.id === id);
-  if (index !== -1) {
-    return users.splice(index, 1)[0];
+async function userJoin(id, username, room) {
+  const user = new User({ id, username, room });
+  try {
+    await user.save();
+    return user;
+  } catch (error) {
+    console.error("Error adding user to MongoDB:", error.message);
+    return null;
   }
 }
 
-function getRoomUsers(room) {
-  return users.filter((user) => user.room === room);
+// Get current user by ID
+async function getCurrentUser(id) {
+  return await User.findOne({ id });
+}
+
+// Remove user from the chat
+async function userLeave(id) {
+  return await User.findOneAndDelete({ id });
+}
+
+// Get users in a room
+async function getRoomUsers(room) {
+  return await User.find({ room });
 }
 
 module.exports = {
   userJoin,
   getCurrentUser,
-  getRoomUsers,
   userLeave,
+  getRoomUsers,
 };

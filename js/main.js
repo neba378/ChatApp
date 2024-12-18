@@ -8,6 +8,7 @@ const { username, room } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
+console.log('username: ',username)
 const socket = io();
 
 // join chat room

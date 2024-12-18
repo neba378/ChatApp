@@ -1,7 +1,10 @@
 const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
-const path = require("path");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+
+const User = require("./models/User");
 const formatMessage = require("./utils/messages.js");
 const {
   userJoin,
@@ -15,46 +18,73 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const botName = "ChatBot";
 
+dotenv.config();
+
+// Serve static files
 app.use(express.static(__dirname));
+
+// Connect to MongoDB
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+mongoose.connection.on("connected", () => console.log("MongoDB Connected"));
+mongoose.connection.on("error", (err) =>
+  console.error("MongoDB Connection Error:", err)
+);
+
 io.on("connection", (socket) => {
-  socket.on("joinRoom", ({ username, room }) => {
-    const user = userJoin(socket.id, username, room);
+  console.log(`User connected: ${socket.id}`);
 
-    socket.join(user.room);
+  // Join a chat room
+  socket.on("joinRoom", async ({ username, room }) => {
+    console.log(socket.id, username, room);
+    const user = await userJoin(socket.id, username, room);
+    console.log("not here",user)
 
-    socket.emit("message", formatMessage(botName, "Welcome to the chat"));
+    if (user) {
+      socket.join(user.room);
 
-    socket.broadcast
-      .to(user.room)
-      .emit(
-        "message",
-        formatMessage(botName, `${user.username} has joined the chat`)
-      );
+      socket.emit("message", formatMessage(botName, "Welcome to the chat"));
 
-    io.to(user.room).emit("roomUsers", {
-      room: user.room,
-      users: getRoomUsers(user.room),
-    });
-
-    socket.on("chatMessage", (msg) => {
-      const user = getCurrentUser(socket.id);
-      io.to(user.room).emit("message", formatMessage(`${user.username}`, msg));
-    });
-    socket.on("disconnect", () => {
-      const user = userLeave(socket.id);
-
-      if (user) {
-        io.to(user.room).emit(
+      socket.broadcast
+        .to(user.room)
+        .emit(
           "message",
-          formatMessage(botName, `${user.username} has left the chat`)
+          formatMessage(botName, `${user.username} has joined the chat`)
         );
 
-        io.to(user.room).emit("roomUsers", {
-          room: user.room,
-          users: getRoomUsers(user.room),
-        });
-      }
-    });
+      io.to(user.room).emit("roomUsers", {
+        room: user.room,
+        users: await getRoomUsers(user.room),
+      });
+    }
+  });
+
+  // Handle chat messages
+  socket.on("chatMessage", async (msg) => {
+    const user = await getCurrentUser(socket.id);
+    if (user) {
+      io.to(user.room).emit("message", formatMessage(user.username, msg));
+    }
+  });
+
+  // Handle disconnect event
+  socket.on("disconnect", async () => {
+    const user = await userLeave(socket.id);
+
+    if (user) {
+      io.to(user.room).emit(
+        "message",
+        formatMessage(botName, `${user.username} has left the chat`)
+      );
+
+      io.to(user.room).emit("roomUsers", {
+        room: user.room,
+        users: await getRoomUsers(user.room),
+      });
+    }
   });
 });
 
