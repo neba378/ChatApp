@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
 :root {
   --dark-color-a: #667aff;
@@ -14,7 +14,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 ul {
@@ -86,7 +86,7 @@ a {
   color: #f0f4ff;
 }
 
-.join-main input[type='text'],
+.join-main input[type="text"],
 .join-main select {
   font-size: 1rem;
   padding: 10px;
@@ -100,7 +100,7 @@ a {
   transition: border 0.3s ease, box-shadow 0.3s ease;
 }
 
-.join-main input[type='text']:focus,
+.join-main input[type="text"]:focus,
 .join-main select:focus {
   border-color: var(--dark-color-a);
   box-shadow: 0 0 8px rgba(102, 122, 255, 0.5);
@@ -108,7 +108,8 @@ a {
 
 .join-main select {
   appearance: none;
-  background: rgba(255, 255, 255, 0.1) url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 viewBox%3D%220 0 24 24%22 fill%3D%22%23ffffff%22%3E%3Cpath d%3D%22M7 10l5 5 5-5z%22/%3E%3C/svg%3E')
+  background: rgba(255, 255, 255, 0.1)
+    url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns%3D%22http://www.w3.org/2000/svg%22 viewBox%3D%220 0 24 24%22 fill%3D%22%23ffffff%22%3E%3Cpath d%3D%22M7 10l5 5 5-5z%22/%3E%3C/svg%3E")
     no-repeat right 10px center;
   background-size: 15px;
 }
@@ -137,23 +138,21 @@ a {
   }
 }
 
-
 @media (max-width: 700px) {
-	.chat-main {
-		display: block;
-	}
+  .chat-main {
+    display: block;
+  }
 
-	.chat-sidebar {
-		display: none;
-	}
+  .chat-sidebar {
+    display: none;
+  }
 }
-
 
 /* General Reset */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: #ffffff;
   height: 100vh;

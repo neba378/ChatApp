@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 const botName = "ChatBot";
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(__dirname));
 io.on("connection", (socket) => {
   socket.on("joinRoom", ({ username, room }) => {
     const user = userJoin(socket.id, username, room);
