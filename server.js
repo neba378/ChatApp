@@ -18,7 +18,12 @@ const router = require("./router");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "*", // Update with your frontend's domain if needed
+    methods: ["GET", "POST"],
+  },
+});
 
 app.use(cors());
 app.use(router);
@@ -28,7 +33,7 @@ const botName = "ChatBot";
 dotenv.config();
 
 // Serve static files
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, "public")));
 
 // Connect to MongoDB
 mongoose.connect(process.env.DATABASE_URL, {
