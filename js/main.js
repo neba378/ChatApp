@@ -9,7 +9,9 @@ const { username, room } = Qs.parse(location.search, {
 });
 
 console.log('username: ',username)
-const socket = io();
+const socket = io("chatapp-production-499e.up.railway.app", {
+  transports: ["websocket", "polling"], // Ensure compatibility with various transports
+});
 
 // join chat room
 
