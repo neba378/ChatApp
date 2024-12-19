@@ -3,6 +3,7 @@ const http = require("http");
 const socketIo = require("socket.io");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const cors = require("cors");
 
 const User = require("./models/User");
 const formatMessage = require("./utils/messages.js");
@@ -13,9 +14,14 @@ const {
   getRoomUsers,
 } = require("./utils/users.js");
 
+const router = require("./router");
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
+
+app.use(cors());
+app.use(router);
 
 const botName = "ChatBot";
 
