@@ -4,6 +4,8 @@ const socketIo = require("socket.io");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 
+const { Server } = require("socket.io");
+
 const User = require("./models/User");
 const formatMessage = require("./utils/messages.js");
 const {
@@ -15,7 +17,12 @@ const {
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
 const botName = "ChatBot";
 
 dotenv.config();
